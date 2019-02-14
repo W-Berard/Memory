@@ -1,6 +1,8 @@
 package com.example.william.memory;
 
+import android.content.Context;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.ImageView;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Random;
 
 enum GameState{
     INSTANCE;
@@ -16,10 +19,19 @@ enum GameState{
     enum Theme {COULEURS,DRAPEAUX}
 
 
+    private int nbCartes;
     private Theme theme;
 
     private GameState(){
         theme = Theme.COULEURS;
+    }
+
+    public void setNbCartes(int nbCartes){
+        this.nbCartes = nbCartes;
+    }
+
+    public int getNbCartes(){
+        return nbCartes;
     }
 
     public Theme getTheme(){
@@ -38,7 +50,7 @@ enum GameState{
 
 public class MainActivity extends AppCompatActivity {
     ImageView iv11, iv12, iv13, iv14, iv21, iv22, iv23, iv24, iv31, iv32, iv33, iv34, iv41, iv42, iv43, iv44;
-
+    int[] images = {0,0,0,0,0,0,0,0};
     int image1,image2,image3,image4,image5,image6,image7,image8;
     int paires = 0;
     Button restart_button;
@@ -56,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         retournees = false;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        GameState.INSTANCE.setNbCartes(8);
         change_theme_button = findViewById(R.id.change_theme_button);
 
         change_theme_button.setOnClickListener(new View.OnClickListener() {
@@ -230,24 +242,28 @@ public class MainActivity extends AppCompatActivity {
 
     private void initCartes(GameState.Theme theme){
         if(theme == GameState.Theme.COULEURS) {
-            image1 = R.drawable.blanc;
-            image2 = R.drawable.bleu;
-            image3 = R.drawable.jaune;
-            image4 = R.drawable.noir;
-            image5 = R.drawable.orange;
-            image6 = R.drawable.rouge;
-            image7 = R.drawable.rose;
-            image8 = R.drawable.vert;
+            images[0] = R.drawable.blanc;
+            images[1] = R.drawable.bleu;
+            images[2] = R.drawable.jaune;
+            images[3] = R.drawable.noir;
+            images[4] = R.drawable.orange;
+            images[5] = R.drawable.rouge;
+            images[6] = R.drawable.rose;
+            images[7] = R.drawable.vert;
         }
         if(theme == GameState.Theme.DRAPEAUX){
-            image1 = R.drawable.italy;
-            image2 = R.drawable.luxembourg;
-            image3 = R.drawable.france;
-            image4 = R.drawable.ukraine;
-            image5 = R.drawable.sweden;
-            image6 = R.drawable.russia;
-            image7 = R.drawable.czech_republic;
-            image8 = R.drawable.brazil;
+            int[] res = {R.drawable.brazil,R.drawable.czech_republic,R.drawable.european_union,R.drawable.finland,R.drawable.france,R.drawable.germany,R.drawable.greece,R.drawable.israel,R.drawable.italy,R.drawable.luxembourg,R.drawable.palestine,R.drawable.russia,R.drawable.spain,R.drawable.sweden,R.drawable.turkey,R.drawable.ukraine,R.drawable.united_kingdom,R.drawable.united_states_of_america,R.drawable.venezuela,R.drawable.vietnam};
+            Random r = new Random();
+            int result;
+            for(int i = 0; i < 8; i++){
+                do{
+                    result = r.nextInt(res.length);
+                }while(res[result]==R.drawable.question);
+                images[i] = res[result];
+                res[result] = R.drawable.question;
+
+            }
+
         }
     }
 
@@ -264,21 +280,21 @@ public class MainActivity extends AppCompatActivity {
         if(!retournees) {
             //affichage
             if (listeCartes[idCarte] == 11) {
-                iv.setImageResource(image1);
+                iv.setImageResource(images[0]);
             } else if (listeCartes[idCarte] == 12) {
-                iv.setImageResource(image2);
+                iv.setImageResource(images[1]);
             } else if (listeCartes[idCarte] == 13) {
-                iv.setImageResource(image3);
+                iv.setImageResource(images[2]);
             } else if (listeCartes[idCarte] == 14) {
-                iv.setImageResource(image4);
+                iv.setImageResource(images[3]);
             } else if (listeCartes[idCarte] == 15) {
-                iv.setImageResource(image5);
+                iv.setImageResource(images[4]);
             } else if (listeCartes[idCarte] == 16) {
-                iv.setImageResource(image6);
+                iv.setImageResource(images[5]);
             } else if (listeCartes[idCarte] == 17) {
-                iv.setImageResource(image7);
+                iv.setImageResource(images[6]);
             } else if (listeCartes[idCarte] == 18) {
-                iv.setImageResource(image8);
+                iv.setImageResource(images[7]);
             }
             //
             if (nombreCarte == 1) { //cas première carte retournée
@@ -310,6 +326,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void test(){
         if(carte1 == carte2){
+            paires++;
             if(clic1 == 0){
                 iv11.setVisibility(View.INVISIBLE);
             } else if(clic1 == 1){
@@ -375,6 +392,18 @@ public class MainActivity extends AppCompatActivity {
                 iv43.setVisibility(View.INVISIBLE);
             } else if(clic2 == 15){
                 iv44.setVisibility(View.INVISIBLE);
+            }
+            if(paires==GameState.INSTANCE.getNbCartes()){
+                // 1. Instantiate an <code><a href="/reference/android/app/AlertDialog.Builder.html">AlertDialog.Builder</a></code> with its constructor
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                // 2. Chain together various setter methods to set the dialog characteristics
+                builder.setMessage(R.string.dialog_message)
+                        .setTitle(R.string.dialog_title);
+
+                // 3. Get the <code><a href="/reference/android/app/AlertDialog.html">AlertDialog</a></code> from <code><a href="/reference/android/app/AlertDialog.Builder.html#create()">create()</a></code>
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         } else{
             iv11.setImageResource(R.drawable.question);

@@ -2,4 +2,8 @@
     <string name="app_name">MemoryProjetM1</string>
     <string name="restart">Restart</string>
     <string name="change_theme">Change Theme</string>
+    <string name="return_button">Return</string>
+    <string name="dialog_message">fini</string>
+    <string name="dialog_title">bravo</string>
+
 </resources>
