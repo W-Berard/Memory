@@ -3,7 +3,9 @@
     <string name="restart">Restart</string>
     <string name="change_theme">Change Theme</string>
     <string name="return_button">Return</string>
+    <string name="difficulty">Change Difficulty</string>
     <string name="dialog_message">fini</string>
     <string name="dialog_title">bravo</string>
+    <string name="start">Start</string>
 
 </resources>
